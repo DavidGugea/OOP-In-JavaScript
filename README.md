@@ -6,7 +6,7 @@
 Before getting into the details of OOP in JavaScript let's talk about the 4 big concepts of OOP ( AEIP ) :
 
 * ***Abstraction*** [ Abstract behaviour is summarized in different classes and prototypes ]
-* ***Encapsulation*** [ Hiding properties and/or methods from the outside using special keywords and setters&getters]
+* ***Encapsulation*** [ Hiding properties and/or methods from the outside using special keywords and setters&getters ]
 * ***Inheritance*** [ The child classes that inherit from other parent classes are can use all the methods & properties that are presented in the parent classes ( with exception of some keywords e.g private in C# ) ]
 * ***Polymorphism*** [ Objects can be used as other types that they inherit from in different contexts ]  
 
@@ -62,3 +62,40 @@ my_dog_max.age = -5
 In this case, since you directly use the property 'age' without any setter, it won't return any error and the age will be set to a negative integer.
 
 #### ***3. Inheritance***
+**Through inheritance all properties and methods will be passed down and usable in all the classes that are made from another class**. So let's say that you have class A with method x and property y. After creating class A you create class B that inherits from class A and has another property called z. In class B you can use all the properties and methods from class A & everything that you add to class B.
+
+Inheritance represents an 'is-a'-connection. So let's say that the class dog inherits from the class Animal. You can also read that as : dog is - an Animal. 
+
+Inheritance is especially useful when you don't want to repeat methods & properties and in order to structure your code in such a way that it makes sense, like in our previous case with the classes dog & animal.
+
+#### ***4. Polymorphism***
+**Polymorphism is the ability of classes to be passed down as different types in certain contexts**. Through that statement I mean that for example you have 2 classes :
+
+- Animal
+- Dog ( inherited from the upper-class Animal )
+- Vegeterian_Dog ( inherited from the upper-class dog)
+
+Let's say that we have a function called *pet(Animal animal_to_pet)*. So the function needs an object of type Animal. 
+
+Through polymorphism we are allowed to pass in the function all objects that are of the specific type asked and all objects that are derived/inherited from that type.
+
+In this case we are allowed to use objects that are of type Dog & Vegeterian_Dog as well even if the type asked is Animal, that is irrelevant.
+
+**Polymorphism only goes down the inheritance-chain, but never up.**
+
+What this means is that if you have the function *pet_dog(Dog dog_to_pet)*, you could pass objects that are of type Vegeterian_Dog since they are derived/inherited from the type Dog, but you can't add objects of type Animal even if the type Dog is inherited from Animal, you can't go up the chain, only down. 
+
+*To be brief, you can't pass arguments whom types are upper-classes of the asked type, you can only pass arguments that have the exact type that is asked or objects that have types inherited from the type asked.*
+
+#### **JavaScript and Object Orientation** ####
+In JavaScript, object orientation is not the same as in other languages, like in Java or C# for example. As I've previously said, JavaScript is a prototypical programming language. That means that Objects are build out of other objects, not out of classes. The objects that they are built from are also called their *"prototypes"*. 
+
+In JavaScript there are three techniques of working with object orientation:
+
+1. Prototypical Object Orientation [ This is the most pure way of working with oop in JavaScript since this is where you use objects. As previously said JavaScript doesn't know real classes, everything is an object and every object ]
+2. Pseudoclassical Object Orientation [ By using this pattern you utilize JavaScript as if it would be a class-based programming language. Here is where you use constructors ]
+3. Object Orientation with class syntax [ This pattern is a simple syntatical way of the pseudoclassical object orientation pattern ]
+
+---
+
+## 1. Prototypical Object Orientation ##
