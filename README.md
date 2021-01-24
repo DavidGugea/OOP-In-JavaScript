@@ -85,7 +85,9 @@ In this case we are allowed to use objects that are of type Dog & Vegeterian_Dog
 
 What this means is that if you have the function *pet_dog(Dog dog_to_pet)*, you could pass objects that are of type Vegeterian_Dog since they are derived/inherited from the type Dog, but you can't add objects of type Animal even if the type Dog is inherited from Animal, you can't go up the chain, only down. 
 
-*To be brief, you can't pass arguments whom types are upper-classes of the asked type, you can only pass arguments that have the exact type that is asked or objects that have types inherited from the type asked.*
+In JavaScript, polymorphism is included by default since there are no 'types', you can put in the argument of a function whatever you want and there will be no errors.
+
+*To be brief, you can't pass arguments whom types are upper-classes of the asked type, you can only pass arguments that have the exact type that is asked or objects that have types inherited from the type asked. *
 
 #### **JavaScript and Object Orientation** ####
 In JavaScript, object orientation is not the same as in other languages, like in Java or C# for example. As I've previously said, JavaScript is a prototypical programming language. That means that Objects are build out of other objects, not out of classes. The objects that they are built from are also called their *"prototypes"*. 
@@ -99,3 +101,83 @@ In JavaScript there are three techniques of working with object orientation:
 ---
 
 ## 1. Prototypical Object Orientation ##
+JavaScript doesn't have the so called 'classes' that you would see in a class-based programming language like Java. In JavaScript you only have objects and each object can be used as the parent-object for another object, so we will call the parent-object the prototype of the new inherited object. That is why we call JavaScript a prototoype-based programming language. Every object in JavaScript is made out of another object, except the biggest parent-object that all objects inherit from : the object ***Object***. 
+We've previously learned that classes are used as structures for objects. In JavaScript we don't have classes, only objects.
+Every object in JavaScript can be used as the structure for another object. So let's say that you have object A and you make object B that made out of object A. Object A will become the prototype of object B. We could translate that into a class-based programming language in creating the sub-class B for the super/parent-class A. 
+In JavaScript in order to get the prototype for an object, you can write the name of the object and then use the prototype \_\_proto\_\_ example : object_B.\_\_proto\_\_ will return you object_A since object_B has been made from object_A.
+
+Let's take the following code as an example:
+```JavaScript
+let Animal= {
+    name : "",
+    color : "Brown",
+    age : 0,
+    eat: function(food){
+        console.log(`I'm eating ${food}`);
+    },
+    drink: function(drink){
+        console.log(`I'm drinking ${drink}`);
+    }
+}
+
+let Dog = Object.create(Animal);
+Dog.bark = function(){
+    console.log("Bark !");
+}
+
+let Cat = Object.create(Animal);
+Cat.Meow = function(){
+    console.log("Meow !");
+}
+
+let VegeterianDog = Object.create(Dog);
+VegeterianDog.eat = function(food){
+    if(food === "meat"){
+        console.log("I don't eat meat.");
+    }else{
+        Object.getPrototypeOf(VegeterianDog).call(this, food);
+    }
+}
+```
+
+I will draw a short diagram so we can understand the code better:
+
+![Classes Sketch](ScreenshotsForNotes/Classes_Sketch.PNG)
+
+**Important note for the sketch**: As I've already drew in the sketch, Animal inherits from the object Object, the object in JavaScript that has no prototype ( no \_\_proto\_\_ property ), it doesn't inherit from anything. If you write in the console Animal.\_\_proto\_\_ === Object, you will get 'False', since it returns another object with the name Object that still has a prototype. In order to get the parent object Object that has no prototype and that is the prototype of every made object, you have to get the prototype of the given object Object 2 times. So you need to write Object.getPrototypeOf(Object), which will give you another object Object that still has a prototype, and then you have to write Object.getPrototypeOf() again, so Object.getPrototypeOf(Object.getPrototypeOf(Object)).
+
+This is how the object Object works and looks like. As previously mentioned, every object made in JavaScript has a prototype, that being the object Object, the object Object that has no prototype ( no \_\_proto\_\_ property).
+
+![objectObject](ScreenshotsForNotes/ObjectObjectObject.PNG)
+
+After you inherit the object Dog from the object Animal, you can add other properties & methods to your object Dog. In the object VegeterianDog we see that it is even possible to override methods & properties, so we are completly free and flexible when it comes to inheritance. 
+Now, **besides the properties & methods that we add to an object, there is always one property that is automatically added, that is the property \_\_proto\_\_ that defines the property of the specific object**. 
+This is how \_\_proto\_\_ works:
+
+```JavaScript
+console.log(Object.getPrototypeOf(Animal) === Object.getPrototypeOf(Object.getPrototypeOf(Object))); // True
+console.log(Object.getPrototypeOf(Dog) === Animal); // True
+console.log(Object.getPrototypeOf(Cat) === Animal); // True
+console.log(Object.getPrototypeOf(VegeterianDog) === Dog); // True
+
+console.log(Object.getPrototypeOf(Dog) === Cat); // False
+```
+
+We can see from the code that for example the object VegeterianDog is made from Dog, so Dog is the prototype of VegeterianDog. Dog is made from Animal, so Animal is the prototype of Dog. In JavaScript each object is the prototype of other object, and the prototype of that object has another prototype from another object and so on, until we reach the object Object that has no prototype. This is what we call the **prototype chain**. The objects that are up on the prototype chain are more abstract, the ones that are down are more special.
+
+***This is why the prototype chain is so useful:***
+Let's say that you want to use the method "drink" in VegeterianDog so you write 
+
+```JavaScript 
+VegeterianDog.drink()
+```
+
+JavaScript will now go in the object VegeterianDog and will see that you don't have any method called 'drink', so it will go in the prototype of the object VegeterianDog, which is Dog. JavaScript will see that there is such method called 'drink' in Dog either, so it will go in the prototype of Dog, that is Animal. In Animal, JavaScript will see the method "drink" and will execute it. This is how the prototype chain is used in JavaScript. Let's say that you would want to use a method called 'isPrototypeOf', JavaScript will go from Dog Ap to Animal and won't find that method. Afterwards, it will go as usual in the prototype of Animal, which is the object Object that has no prototype and will find that method. If you execute a method that doesn't exist in any of the prototypes JavaScript will return an error ( TypeError ) since it will go from the object that you've called the method from up until the object Object and won't find it, so it will return an error.
+
+***Summarized***
+In JavaScript we don't have classes, we only have objects that can be used as structures for other classes and that's why we call JavaScript a prototypical-based programming language. Because we can use objects as structures for other objects that would translate in a class-based programming language like Java into creating a sub-class from a parent-class. 
+Let's say that we have object A and object B and object B has been made from object A. Object A will become the prototype of object B. Every object in JavaScript has a prototype, except for example the object Object that has no prototype and all objects are made out of this parent-object, the object Object. In our example, object A will be the prototype of object B and the ***object Object*** will be the prototype of object A. 
+Just because you have created an object B out of object A that doesn't mean that you can't add anything to object B that differs from object A. You are allowed to add new properties, methods and even override existing methods.
+Every object has a prototype and the prototype of every object has another prototype until it reaches the object Object. This is also called the prototype chain.
+The prototype chain is useful for JavaScript since it bounces from the object where a method or property is called from its prototype to the prototypes of previous prototypes until it reaches to object Object in order to find the specific method or property. So if you execute a method in object B, JavaScript goes to search for that method in object B, if it doesn't find the method it jumps in the prototype of object B, object A. If it doesn't find the object A, it jumps into the object Object. If it doesn't find that method in the object Object either, it will just raise a TypeError.
+Note: if you write 'console.dir(Object)' in the console you won't get the parent object Object that has no prototype, you will get an object Object that has another prototype. The prototype of the given object Object has another prototype the original parent object Object without any prototype. So in order to get the object Object you have to get the prototype 2 times -> Object.getPrototypeOf(Object.getPrototypeOf(Object)).
