@@ -89,7 +89,7 @@ In JavaScript, polymorphism is included by default since there are no 'types', y
 
 *To be brief, you can't pass arguments whom types are upper-classes of the asked type, you can only pass arguments that have the exact type that is asked or objects that have types inherited from the type asked. *
 
-#### **JavaScript and Object Orientation** ####
+#### **JavaScript and Object Orientation** 
 In JavaScript, object orientation is not the same as in other languages, like in Java or C# for example. As I've previously said, JavaScript is a prototypical programming language. That means that Objects are build out of other objects, not out of classes. The objects that they are built from are also called their *"prototypes"*. 
 
 In JavaScript there are three techniques of working with object orientation:
@@ -100,7 +100,7 @@ In JavaScript there are three techniques of working with object orientation:
 
 ---
 
-## 1. Prototypical Object Orientation ##
+## 1. Prototypical Object Orientation
 JavaScript doesn't have the so called 'classes' that you would see in a class-based programming language like Java. In JavaScript you only have objects and each object can be used as the parent-object for another object, so we will call the parent-object the prototype of the new inherited object. That is why we call JavaScript a prototoype-based programming language. Every object in JavaScript is made out of another object, except the biggest parent-object that all objects inherit from : the object ***Object***. 
 We've previously learned that classes are used as structures for objects. In JavaScript we don't have classes, only objects.
 Every object in JavaScript can be used as the structure for another object. So let's say that you have object A and you make object B that made out of object A. Object A will become the prototype of object B. We could translate that into a class-based programming language in creating the sub-class B for the super/parent-class A. 
