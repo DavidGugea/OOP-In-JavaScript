@@ -181,3 +181,338 @@ Just because you have created an object B out of object A that doesn't mean that
 Every object has a prototype and the prototype of every object has another prototype until it reaches the object Object. This is also called the prototype chain.
 The prototype chain is useful for JavaScript since it bounces from the object where a method or property is called from its prototype to the prototypes of previous prototypes until it reaches to object Object in order to find the specific method or property. So if you execute a method in object B, JavaScript goes to search for that method in object B, if it doesn't find the method it jumps in the prototype of object B, object A. If it doesn't find the object A, it jumps into the object Object. If it doesn't find that method in the object Object either, it will just raise a TypeError.
 Note: if you write 'console.dir(Object)' in the console you won't get the parent object Object that has no prototype, you will get an object Object that has another prototype. The prototype of the given object Object has another prototype the original parent object Object without any prototype. So in order to get the object Object you have to get the prototype 2 times -> Object.getPrototypeOf(Object.getPrototypeOf(Object)).
+
+
+---
+
+## 2. Pseudoclassical Object Orientation
+
+In pseudoclassical object orientation we use normal functions as we use classes in class based programming languages, almost the same, with slight differences. We use normal functions that we call then call *constructor functions* by adding the keyword *new* to them. Example :
+
+```JavaScript
+function Animal(name, color, age){
+    this.name = name;
+    this.color = color;
+    this.age = age;
+}
+
+let dog = new Animal("Max", "black", 2);
+```
+
+We can see from the code that we have to use ***this*** when writing a property from the constructor. 
+If we console.dir Animal we can see that the \_\_proto\_\_ in this case isn't like in prototypical object orientation, the object Object without any prototype, but it's the second object Object, the one with a prototype ( with a \_\_proto\_\_ property ). On top of that it has a ***prototype*** property. To summarize : ***\_\_proto\_\_*** is the prototype of the object meaning that, it's the prototype property of the object that it has been made from, in this case it is Object.getProtypeOf(Object) and ***prototype*** is what comes inside all other objects that are made from current object. 
+***In pseudoclassical object orientation if you build an object from a constructor function, it will inherit everything that is in the constructor && in the prototype property of the constructor function. The prototype and \_\_proto\_\_ properties of the constructor function are objects themselves.***
+This is how the constructor function Animal and the object 'Dog' made out of it look like : 
+
+![constructorFunction_and_ObjectMadeOutOfIt](ScreenshotsForNotes/AnimalDogDir_constructorFunction_andObject.PNG)
+
+From the screenshot we can see that Dog gets the normal properties from the constructor, so age, color and name and on top of that it has the \_\_proto\_\_ property that is another objects itself and that is the same as Animal.prototype. So Object.getPrototypeOf(Dog) === Animal.prototype. 
+
+In Animal.prototype we can see 2 other properties : constructor and \_\_proto\_\_. \_\_proto\_\_ in this case is the object Object without any other prototype, so the parent object Object. It also has the property constructor which if we look into we will see that it is the object itself again, so, Animal. I will get into this specific property later, its usecases and why it's needed.
+
+So, to summarize : In pseudoclassical oop we use normal functions as 'classes' and we call them 'constructor functions' by adding the keyword 'new' when we make an object out of them. Any constructor function has the properties arguments, caller, length and name and it has 2 other properties called **prototype** and **\_\_proto\_\_** and they are both objects themselves. The **prototype** property will be the \_\_proto\_\_ property of all objects that will be made from the constructor function. So the prototype of the objects that are made from the constructor function will be the prototype property of the constructor function. The prototype property has 2 other properties that are also objects themselves : constructor, which will be further explained and another \_\_proto\_\_ property which is the object Object without any other proto. The property **\_\_proto\_\_** of the constructor function is the second object Object with another \_\_proto\_\_ property so it's Object.getPrototypeOf(Object). If we would look at a diagram of a constructor function and it's object it would look like this:
+
+![Constructor Function and object example](ScreenshotsForNotes/ConstructorFunction_and_objectExample_diagram.PNG)
+
+Until now we have only worked with normal properties and explained how the prototype chain between constructor function & object works. There are 2 ways only when it comes to writing methods in Pseudoclassical OOP using constructor functions.
+You either :
+
+* Write the methods inside the constructor function ( *wrong* )
+* Write the methods inside the prototype of the constructor function ( *right* )
+
+Writing the methods inside the constructor function has the same effect as writing them inside the prototype of the constructor function. 
+The reason why you should never write methods inside the constructor function directly is that it makes everything slower. Every time you make an new instance of the new object, the methods will be created again for each instance.
+On the other side, writing the methods in the prototype of the constructor function makes everything faster. On top of everything being faster, thinking about the prototype chain it makes things easier to follow and to structure.
+
+This is how writing methods works ( as we've already said, we write methods in the prototype property only ):
+
+```JavaScript
+function Animal(name, color, age){
+	this.name = name;
+	this.color = color;
+	this.age = age;
+}
+
+Object.defineProperties(
+	Animal.prototype,
+	{
+		eat : {
+			value : function(food){
+				console.log(`I'm eating ${food}`);
+			},
+			writable : false,
+			enumerable : true,
+			configurable : false
+		},
+		drink : {
+			value : function(drink){
+				console.log(`I'm drinking ${drink}`);
+			},
+			writable : false,
+			enumerable : true,
+			configurable : false
+		}
+	}
+);
+
+let dog = new Animal("Max", "black", 2);
+
+dog.eat("meat"); // Output in console : "I'm eating meat"
+dog.drink("water"); // Output in console : "I'm drinking drink"
+```
+
+We've added 2 methods, eat and drink, inside the prototype property of the constructor function. Now we can see that the \_\_proto\_\_ of the object dog will have the 2 basic properties that are always there, \_\_proto\_\_ and constructor and on top of that it will have 2 other methods : eat && drink. 
+Now JavaScript can easily use the prototype chain. Let's say that you write dog.eat("meat"), JavaScript will go inside dog and it won't see any method called 'eat', it will only have 3 properties ( name, age and color ) and the property \_\_proto\_\_. JavaScript will go inside \_\_proto\_\_ where it will finally find the method 'eat'.
+This is an overview of the prototype chain and where the methods are placed: 
+
+![Methods Overview in constructor function and its instance](ScreenshotsForNotes/ConstructorFunction_and_Instance_MethodsOverview.PNG)
+
+Now that we know how the constructor function and instances made out of it works, how to build methods and how the prototypes work we can now go through how inheritance works in pseudoclassical oop.
+
+When it comes to inheritance, it is much more different than what we have seen in prototypical object orientation. 
+In order to inherit in pseudoclassical oop you have to follow this steps:
+
+1. Build your constructor function with all the properties
+2. Inside the constructor function call ( using **apply** or **call**) the function that you want to inherit from. Eventually if any other arguments repeat you can add them inside the **apply** or **call** function so you don't waste space.
+3. Modify the prototype of the constructor function by building it as a **new empty object with the \_\_proto\_\_ property set to the prototype property of the constructor function that you want to inherit from**
+4. Set another property to the prototype property of the constructor function : the **constructor** property as being 
+
+So, let's say that you want to make a constructor function 'Dog' that inherits from the class Animal:
+
+```JavaScript
+function Dog(name, color, age, type){
+    Animal.apply(this, [name, color, age]);
+    this.type = type;
+}
+
+Dog.prototype = Object.create(Animal.prototype);
+Dog.prototype.constructor = Dog;
+
+Object.defineProperty(
+	Dog.prototype,
+	"bark",
+	{
+		value : function(){
+			console.log("bark");
+		},
+		writable : false,
+		enumerable : true,
+		configurable : false
+	}
+);
+
+let Max = new Dog("Max", "black", 2, "GS");
+console.dir(Max);
+console.dir(Animal);
+```
+
+We have made a new constructor function Dog that inherit from Animal. The parameterst from the constructor function are the same as in Animal with one single addition : type. We call the Animal function and apply it's constructor to our constructor by giving it the arguments name, color & age. What this does, it helps you spare space because you don't have to write this\.name = name, this.color = color etc. for each argument which is really helpful and it makes sure that nothing is left behind. Let's say that you have a list called *edible_foods* in Animal that is not written with **this**, so it's not *this.edible_foods*. If you wouldn't call the Animal constructor function inside the Dog constructor function, you wouldn't have that list in Dog, later I'm going to explain this in detail.
+After that we re-build the prototype of Dog. We build a new empty object in the prototype of Dog that has as *\_\_proto\_\_* the prototype property of Animal and set the constructor of the empty object to be Dog, later why.
+Afterwise, as I have previously said, we can add functions inside the prototype of Dog.
+If we console.dir a dog object and the constructor function animal we get this:
+
+***Max:***
+![Max inherited Dog Object](ScreenshotsForNotes/Max.PNG)
+***Animal:***
+![Animal Object](ScreenshotsForNotes/Animal.PNG)
+
+You can clearly see how the prototype chain works. Max.\_\_proto\_\_ is  Animal.prototype.
+
+Now let's get into the details.
+
+*Here are the following reasons why the constructor property is very important:*
+
+* It is used in promises
+* You can use it in order to clone an object easily without any mistakes
+* Let's say that you have the constructor function Person and you're building another constructor function Student that inherits from Person, so you write Student.prototype = Object.create(Person.prototype) now, if you don't write Student.prototype.constructor = Student, if you later want to for example clone the constructor function Student by using the constructor property, Student.constructor will automatically point to Person, which is wrong. The property constructor of Student **must** point to Student otherwise it's misleading.
+
+*Why should you apply/call the constructor of the constructor function that you want to inherit from:*
+
+Let's take in consideration the following example:
+
+```JavaScript
+function Animal(){
+	edible_foods = ["meat"];
+}
+function Dog(name, age){
+	this.name = name;
+	this.age = age;
+}
+
+Dog.prototype = Object.create(Animal.prototype);
+Dog.prototype.constructor = Dog;
+```
+
+As you can see we haven't called the Animal constructor inside our constructor function. Here's what will happen if we try to call the edible_foods array:
+
+```JavaScript
+let x = new Dog("Max", 2);
+console.log(x.edible_foods); // error
+```
+
+We can an error, since Dog doesn't see the array. This is how we should have written the Dog constructor:
+
+```JavaScript
+function Dog(name, age){
+	Animal.call(this);
+
+	this.name = name;
+	this.age = age;
+}
+```
+
+Now, if we try to call the x.edible_foods array, we won't get an error, we would get the actual needed array.
+On top of that, calling the constructor of the constructor function that we want to inherit also helps us a lot with saving space which helps us read things easier. Here's an example:
+
+```JavaScript
+function Animal(name, color, age){
+	this.name = name;
+	this.color = color;
+	this.age = age;
+}
+
+function Dog(name, color, age, type){
+	Animal.call(this, name, color, age);
+	/*
+	We write Animal.call(this, name, color, age) instead of:
+
+	this.name = name;
+	this.color = color;
+	this.age = age;
+
+	Which saves us a lot of space
+	*/
+	this.type = type;
+};
+```
+
+**So that's why you have to call the parent constructor function every time, regardless if you have any arguments to call it with or not.**
+
+The next detail is the following. Is it ok to change the prototype of a child constructor function to be an instance out of the parent constructor function and not an empty object that has the parent constructor function's prototype property as the \_\_proto\_\_ property? So shortly said:
+
+```JavaScript
+function Employee(){} // parent constructor function
+function Consultant(){} // child constructor function
+
+// Is is the same ?
+Consultant.prototype = new Employee();
+// OR:
+Consultant.prototype = Object.create(Employee.prototype);
+```
+
+It's not the same and this is the best way to do it:
+
+```JavaScript
+Consultant.prototype = Object.create(Employee.prototype);
+```
+
+Why ? Here is a short example:
+
+```JavaScript
+function Employee(){
+	this.staff = new Array();
+}
+
+function Consultant(name){
+	this.name = name;
+}
+
+Consultant.prototype = new Employee(); // ***WRONG*** //
+Consultant.prototype.constructor = Consultant;
+
+let x = new Consultant();
+let y = new Consultant();
+
+x.staff.push("A");
+x.staff.push("B");
+
+console.log(x.staff); // ["A", "B"]
+console.log(y.staff); // ["A", "B"]
+
+y.staff.push("C");
+y.staff.push("D");
+
+console.log(x.staff); // ["A", "B", "C", "D"]
+console.log(y.staff); // ["A", "B", "C", "D"]
+```
+
+Basically, as you can see, each time you access the *staff* array you basically access the same array all the time since the prototype is an object. If you want to fix this, just call the parent constructor function, Employee,  in the Consultant. Even then it is still recommended to not mix up things and let the prototype be an empty object with the \_\_proto\_\_ property being the prototype of the parent constructor function so you don't break the prototype chain and let it clean. So, this is the right way:
+
+```JavaScript
+Consultant.prototype = Object.create(Employee.prototype); // ***THE RIGHT WAY*** //
+```
+
+In the end of this sub chapter we will finish with a bigger example and a scheme of how the prototype chain works in the following example:
+
+```JavaScript
+function Animal(name, color, age){
+	this.name = name;
+	this.color = color;
+	this.age = age;
+}
+
+Object.defineProperties(
+	Animal.prototype,
+	{
+		eat: {
+			value : function(food){
+				console.log(`I'm eating ${food}`);
+			},
+			writable : false,
+			enumerable : true,
+			configurable : false
+		},
+		drink: {
+			value : function(drink){
+				console.log(`I'm drinking ${drink}`);
+			},
+			writable : false,
+			enumerable : true,
+			configurable : false
+		}
+	}
+);
+
+function Dog(name, color, age, type){
+	Animal.apply(this, [name, color, age]);
+	this.type = type;
+}
+
+Dog.prototype = Object.create(Animal.prototype);
+Dog.prototype.constructor = Dog;
+
+Object.defineProperty(
+	Dog.prototype,
+	"bark",
+	{
+		value : function(){
+			console.log("Bark.");
+		},
+		writable : false,
+		enumerable : true,
+		configurable : false
+	}	
+);
+
+function VegeterianDog(name, color, age, type){
+	Dog.apply(this, [name, color, age, type]);
+}
+
+VegeterianDog.prototype = Object.create(Dog.prototype);
+VegeterianDog.prototype.constructor = VegeterianDog;
+
+Object.defineProperty(
+	VegeterianDog.prototype,
+	"eat",
+	{
+		value : function(food){
+			food === "meat" ? console.log("I'm not eating meat") : Animal.prototype.eat.call(this, food);
+		},
+		writable : false,
+		enumerable : true,
+		configruable : false
+	}
+);
+```
+
+![Class Diagram](ScreenshotsForNotes/FullClassDiagramOfPseudoclassicalOOP.PNG)
