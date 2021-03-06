@@ -516,3 +516,205 @@ Object.defineProperty(
 ```
 
 ![Class Diagram](ScreenshotsForNotes/FullClassDiagramOfPseudoclassicalOOP.PNG)
+
+## 3. OOP with class syntax
+
+OOP with class syntax has the same idea behind as the pseudoclassical oop but it has some syntactic sugar to make things easier. 
+This is for example how to build a basic 'class':
+
+```JavaScript
+class Animal{
+	constructor(name, color, age){
+		this.name = name;
+		this.color = color;
+		this.age = age;
+	}
+
+	eat(food){
+		console.log(`I'm eating ${food}`);
+	}
+	drink(drink){
+		console.log(`I'm drinking ${drink}`);
+	}
+}
+```
+
+The methods go all automatically inside the prototype property of the class Animal.
+
+![Basic Class](ScreenshotsForNotes/oopWithClassSyntax_basicClass.PNG)
+
+You can see that Max.\_\_proto\_\_ is the same things as Animal.prototype and Animal.\_\_proto\_\_ is Object.getPrototypeOf(Object) is the same thing as pseudoclassical oop.
+
+You can easily use getters and setters, too:
+
+```JavaScript
+class Animal{
+	constructor(name, color, age){
+		this._name = name;
+		this._color = color;
+		this._age = age;
+	}
+
+	get name(){
+		return this._name;
+	}
+	set name(name){
+		this._name = name;
+	}
+
+	get color(){
+		return this._color;
+	}
+	set color(color){
+		this._color = color;
+	}
+
+	get age(){
+		return this._age;
+	}
+	set age(age){
+		this._age = age;
+	}
+
+	eat(food){
+		console.log(`I'm eating ${food}`);
+	}
+	drink(drink){
+		console.log(`I'm drinking ${drink}`);
+	}
+}
+```
+
+It is much more easier to build a sub-class. Everything will be set automatically so the methods will be in the prototype, the sub-class will have a prototype object with the \_\_proto\_\_ property set to be the upper-classe's prototype property and so on. You can do all that by using the keyword ***extends*** and you can call the upper-class by using the keyword ***super***:
+
+```JavaScript
+class Animal{
+	constructor(name, color, age){
+		this.name = name;
+		this.color = color;
+		this.age = age;
+	}
+
+	eat(food){
+		console.log(`I'm eating ${food}`);
+	}
+	drink(drink){
+		console.log(`I'm drinking ${drink}`);
+	}
+}
+
+class Dog extends Animal{
+	constructor(name, color, age, type){
+		super(name, color, age);
+		this.type = type;
+	}
+
+	bark(){
+		console.log("Bark.");
+	}
+}
+
+let Max = new Dog("Max", "black", 2, "GR");
+console.log(Max.name); // Max
+console.log(Max.color); // black
+console.log(Max.age); // 2
+console.log(Max.type); // GR
+
+Max.eat("meat"); // I'm eating meat
+Max.drink("water"); // I'm drinking water
+Max.bark(); // Bark.
+```
+
+If we dir Dog & Animal you can see that everything is set automatically:
+
+![Inheritance DIR](ScreenshotsForNotes/oopWithClassSyntax_inheritanceDIR.PNG)
+
+You can also call methods from the upper-class:
+
+```JavaScript
+class VegeterianDog extends Dog{
+    constructor(name, color, age, type){
+        super(name, color, age, type);
+    }
+    eat(food){
+        if(food instanceof Meat){
+            console.log("I don't eat meat.");
+        }else{
+            super.eat(food);
+        }
+    }
+}
+```
+
+When using class syntax it is very easy to build static methods & properties:
+
+This is how you define a static methods
+```JavaScript
+class Animal{
+    constructor(name, color, age){
+        this._name = name;
+        this._color = color;
+        this._age = age;
+    }
+    static getAnimalColors(){
+        return {
+            WHITE : "Weiß",
+            BLACK : "Schwarz",
+            BROWN : "Braun",
+            GREEN : "Grün",
+            YELLOW: "Orange",
+            ORANGE: "Orange"
+        }
+    }
+}
+
+console.log(Animal.getAnimalColors());
+```
+
+Static properties on the other side have to be build outside of the class
+
+```JavaScript
+class Animal{
+    constructor(name, color, age){
+        this._name = name;
+        this._color = color;
+        this._age = age;
+    }
+}
+
+Animal.ANIMAL_COLORS = {
+    WHITE : "Weiß",
+    BLACK : "Schwarz",
+    BROWN : "Braun",
+    GREEN : "Grün",
+    YELLOW: "Orange",
+    ORANGE: "Orange"
+}
+```
+
+Unlike methods & properties that are not static, they are saved on the **'class'** itself, not on the prototype property. Here is an example:
+
+```JavaScript
+class Animal{
+	constructor(name, color, age){
+		this.name = name;
+		this.color = color;
+		this.age = age;
+	}
+
+	static ANIMAL_COLORS = {
+	    WHITE : "Weiß",
+	    BLACK : "Schwarz",
+	    BROWN : "Braun",
+	    GREEN : "Grün",
+	    YELLOW: "Orange",
+	    ORANGE: "Orange"	
+	}
+}
+
+Animal.TEST = "test_static_property";
+
+console.dir(Animal);
+```
+
+![Static methods & properties dir](ScreenshotsForNotes/static_dir.PNG)
