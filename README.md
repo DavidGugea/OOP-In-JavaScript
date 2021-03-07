@@ -33,12 +33,12 @@ my_dog_max.drink("water")
 
 ```
 
-JavaScript is an object based programming languages. There are no real classes. Instances of objects are made out of other objects and not out of classes like in other programming languagues like for example Java or C# or Python. If object 1 is made out of object 2, we call object 2 the prototype of object 1. Because of this principle of 'prototypes' we say that JavaScript is a prototypical programming language or an object-based programming language. We'll get into the details of prototypes later on.
+JavaScript is an object based programming languages. There are no real classes. Instances of objects are made out of other objects and not out of classes like in other programming languagues like for example Java or C# or Python. If object 1 is made out of object 2, we can say in some cases that object 2 is the prototype of object 1 or that the prototype property of object 2 is the prototype of object 1. Because of this principle of 'prototypes' we say that JavaScript is a prototypical programming language or an object-based programming language. We'll get into the details of prototypes later on.
 
 Now we can better understand the big 4 concepts of object oriented programming :
 
 #### ***1. Abstraction***
-As I've previously exaplained, **through abstraction we mean that classes & prototypes represent the structure while objects are more specific entities that are instances of this classes. Objects have speicific data filled in the properties that are structured in the class, while the class itself only shows the type of the properties and how they should look like and how they have to function**.
+As I've previously explained, **through abstraction we mean that classes & prototypes represent the structure while objects are more specific entities that are instances of this classes. Objects have specific data filled in the properties that are structured in the class, while the class itself only shows the type of the properties and how they should look like and how they have to function**.
 
 An example of this would be that we've previously made the class "Animal" that had the properties name & age. So the class animal is an abstract structure, nothing that we can actually use. Succeeding we have created the object my_dog_max that is made out of the class Animal, that is an instance of the class Animal. The object my_dog_max has filled in the 'name' & 'age' properties, so it's something more specific, it's not an abstract structure like the class Animal anymore.
 Here is a drawing that summarises abstraction
@@ -46,7 +46,7 @@ Here is a drawing that summarises abstraction
 ![Abstraction Definition Image](ScreenshotsForNotes/AbstractionDefinition_SS.PNG)
 
 #### ***2. Encapsulation***
-**Through the notion of encapsulation or also called, information hiding is meant that we want to protect certain properties and/or methods from being used outside the object itself.**
+**Through the notion of encapsulation or also called, information hiding is meant that we want to hide certain properties from being used outside the object itself. We can only access them using getters and setters.**
 
 Let's take an example. Let's say that you have the Animal class and you have the property age. Since you know that the age of the Animal can't be negative you want to protect that variable from being unintentionally set to a negative integer. In order to do that you use the concept of encapsulation. What this means is that, you set the main property that you want to protect to private so that it is only available inside the class and then make use of setters and getters outside of the class in order to control the input that comes into the property. 
 If you set the property age on private and create a setter called set_age for example, that setter will control the input that comes into your private property age in such a way that it will be impossible for you to set the age to a negative integer. You can write the code in such a way that it returns an error when you try to put negative integers into your age property.
@@ -62,14 +62,14 @@ my_dog_max.age = -5
 In this case, since you directly use the property 'age' without any setter, it won't return any error and the age will be set to a negative integer.
 
 #### ***3. Inheritance***
-**Through inheritance all properties and methods will be passed down and usable in all the classes that are made from another class**. So let's say that you have class A with method x and property y. After creating class A you create class B that inherits from class A and has another property called z. In class B you can use all the properties and methods from class A & everything that you add to class B.
+**Through inheritance all properties and methods will be passed down in all the classes that are made from another class**. So let's say that you have class A with method x and property y. After creating class A you create class B that inherits from class A and has another property called z. In class B you can use all the properties and methods from class A & everything that you add to class B, if they are not private properties or methods. In case that they are protected or public you can use them.
 
 Inheritance represents an 'is-a'-connection. So let's say that the class dog inherits from the class Animal. You can also read that as : dog is - an Animal. 
 
-Inheritance is especially useful when you don't want to repeat methods & properties and in order to structure your code in such a way that it makes sense, like in our previous case with the classes dog & animal.
+Inheritance is especially useful when you don't want to repeat methods & properties and in order to structure your code in such a way that it makes sense, like in our previous case with the classes dog & animal. You don't have to repeat yourself and it makes code much more easier to read and understand.
 
 #### ***4. Polymorphism***
-**Polymorphism is the ability of classes to be passed down as different types in certain contexts**. Through that statement I mean that for example you have 2 classes :
+**Polymorphism is the ability of classes to be passed down as different types in certain contexts**. Through that statement I mean that for example you have 3 classes :
 
 - Animal
 - Dog ( inherited from the upper-class Animal )
@@ -82,15 +82,16 @@ Through polymorphism we are allowed to pass in the function all objects that are
 In this case we are allowed to use objects that are of type Dog & Vegeterian_Dog as well even if the type asked is Animal, that is irrelevant.
 
 **Polymorphism only goes down the inheritance-chain, but never up.**
+***A vegeterian dog is always a dog. A dog is always an Animal. Not all Animals are dogs. Not all dogs are vegeterian dogs. You can only work with Polymorphism by walking up the chain, never down***
 
 What this means is that if you have the function *pet_dog(Dog dog_to_pet)*, you could pass objects that are of type Vegeterian_Dog since they are derived/inherited from the type Dog, but you can't add objects of type Animal even if the type Dog is inherited from Animal, you can't go up the chain, only down. 
 
 In JavaScript, polymorphism is included by default since there are no 'types', you can put in the argument of a function whatever you want and there will be no errors.
 
-*To be brief, you can't pass arguments whom types are upper-classes of the asked type, you can only pass arguments that have the exact type that is asked or objects that have types inherited from the type asked. *
+*To be brief, you can't pass arguments whom types are upper-classes of the asked type, you can only pass arguments that have the exact type that is asked or objects that have types inherited from the type asked.* 
 
 #### **JavaScript and Object Orientation** 
-In JavaScript, object orientation is not the same as in other languages, like in Java or C# for example. As I've previously said, JavaScript is a prototypical programming language. That means that Objects are build out of other objects, not out of classes. The objects that they are built from are also called their *"prototypes"*. 
+In JavaScript, object orientation is not the same as in other languages, like in Java or C# for example. As I've previously said, JavaScript is a prototypical programming language. That means that Objects are build out of other objects, not out of classes.
 
 In JavaScript there are three techniques of working with object orientation:
 
