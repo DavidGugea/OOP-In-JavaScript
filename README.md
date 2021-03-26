@@ -276,7 +276,7 @@ In order to inherit in pseudoclassical oop you have to follow this steps:
 1. Build your constructor function with all the properties
 2. Inside the constructor function call ( using **apply** or **call**) the function that you want to inherit from. Eventually if any other arguments repeat you can add them inside the **apply** or **call** function so you don't waste space.
 3. Modify the prototype of the constructor function by building it as a **new empty object with the \_\_proto\_\_ property set to the prototype property of the constructor function that you want to inherit from**
-4. Set another property to the prototype property of the constructor function : the **constructor** property as being 
+4. Set another property to the prototype property of the constructor function : the **constructor** property as being the new constructor function that is inherited from the upper-constructor-function
 
 So, let's say that you want to make a constructor function 'Dog' that inherits from the class Animal:
 
@@ -307,7 +307,7 @@ console.dir(Max);
 console.dir(Animal);
 ```
 
-We have made a new constructor function Dog that inherit from Animal. The parameterst from the constructor function are the same as in Animal with one single addition : type. We call the Animal function and apply it's constructor to our constructor by giving it the arguments name, color & age. What this does, it helps you spare space because you don't have to write this\.name = name, this.color = color etc. for each argument which is really helpful and it makes sure that nothing is left behind. Let's say that you have a list called *edible_foods* in Animal that is not written with **this**, so it's not *this.edible_foods*. If you wouldn't call the Animal constructor function inside the Dog constructor function, you wouldn't have that list in Dog, later I'm going to explain this in detail.
+We have made a new constructor function Dog that inherits from Animal. The parameters from the constructor function are the same as in Animal with one single addition : type. We call the Animal function and apply it's constructor to our constructor by giving it the arguments name, color & age. What this does, it helps you spare space because you don't have to write this\.name = name, this.color = color etc. for each argument which is really helpful and it makes sure that nothing is left behind. Let's say that you have a list called *edible_foods* in Animal that is not written with **this**, so it's not *this.edible_foods*. If you wouldn't call the Animal constructor function inside the Dog constructor function, you wouldn't have that list in Dog, later I'm going to explain this in detail.
 After that we re-build the prototype of Dog. We build a new empty object in the prototype of Dog that has as *\_\_proto\_\_* the prototype property of Animal and set the constructor of the empty object to be Dog, later why.
 Afterwise, as I have previously said, we can add functions inside the prototype of Dog.
 If we console.dir a dog object and the constructor function animal we get this:
@@ -333,7 +333,7 @@ Let's take in consideration the following example:
 
 ```JavaScript
 function Animal(){
-	edible_foods = ["meat"];
+	let edible_foods = ["meat"];
 }
 function Dog(name, age){
 	this.name = name;
