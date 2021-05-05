@@ -223,7 +223,7 @@ You either :
 
 Writing the methods inside the constructor function has the same effect as writing them inside the prototype of the constructor function. 
 The reason why you should never write methods inside the constructor function directly is that it makes everything slower. Every time you make an new instance of the new object, the methods will be created again for each instance.
-On the other side, writing the methods in the prototype of the constructor function makes everything faster. On top of everything being faster, thinking about the prototype chain it makes things easier to follow and to structure.
+On the other side, writing the methods in the prototype of the constructor function makes everything faster since the methods aren't created every time you make a new instace, they will just pe searched on the prototype chain from the current object so they will only be created once which is very beneficial for the memory and time efficiency. On top of everything being faster, thinking about the prototype chain it makes things easier to follow and to structure.
 
 This is how writing methods works ( as we've already said, we write methods in the prototype property only ):
 
@@ -544,7 +544,7 @@ The methods go all automatically inside the prototype property of the class Anim
 
 ![Basic Class](ScreenshotsForNotes/oopWithClassSyntax_basicClass.PNG)
 
-You can see that Max.\_\_proto\_\_ is the same things as Animal.prototype and Animal.\_\_proto\_\_ is Object.getPrototypeOf(Object) is the same thing as pseudoclassical oop.
+You can see that Max.\_\_proto\_\_ is the same thing as Animal.prototype and Animal.\_\_proto\_\_ is Object.getPrototypeOf(Object) is the same thing as pseudoclassical oop.
 
 You can easily use getters and setters, too:
 
@@ -649,7 +649,7 @@ class VegeterianDog extends Dog{
 
 When using class syntax it is very easy to build static methods & properties:
 
-This is how you define a static methods
+This is how you define a static method
 ```JavaScript
 class Animal{
     constructor(name, color, age){
